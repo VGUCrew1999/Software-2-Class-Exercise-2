@@ -21,10 +21,10 @@ namespace PetStore.Logic
         public List<Product> GetAllProducts();
 
         /// <summary>
-        /// Gets a dog leash by the name of the product
+        /// Gets a product by the name of the product
         /// </summary>
         /// <param name="name">The name given to the product.  It can include spaces</param>
-        public DogLeash GetDogLeashByName(string name);
+        public T GetProductByName<T>(string name) where T : Product;
 
         /// <summary>
         /// Get all in stock products

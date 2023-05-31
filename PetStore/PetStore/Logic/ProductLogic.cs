@@ -1,7 +1,9 @@
 ﻿using PetStore.Logic;
 using PetStore.Models;
+using PetStore.Validators;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,7 +55,16 @@ namespace PetStore
         {
             if (product is DogLeash)
             {
-                _dogLeash.Add(product.Name, product as DogLeash);
+                var validator = new DogLeashValidator();
+                if (validator.Validate(product as DogLeash).IsValid)
+                {
+                    _dogLeash.Add(product.Name, product as DogLeash);
+                }
+                else
+                {
+                    throw new ValidationException("The dog leash product isn't valid");
+                }
+                
             }
             if (product is CatFood)
             {
@@ -67,11 +78,22 @@ namespace PetStore
             return _products;
         }
 
-        public DogLeash GetDogLeashByName(string name)
+        public T GetProductByName<T>(string name) where T : Product
         {
             try
             {
-                return _dogLeash[name];
+                if (typeof(T) == typeof(DogLeash))
+                {
+                    return _dogLeash[name] as T;
+                }
+                else if (typeof(T) == typeof(CatFood))
+                {
+                    return _catFood[name] as T;
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception)
             {
